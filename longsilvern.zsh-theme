@@ -1,21 +1,27 @@
-GIT_PROMPT_BEHIND="%{$fg[red]%}⇣"
-GIT_PROMPT_DIRTY="%{$fg[yellow]%}*"
-GIT_PROMPT_AHEAD="%{$fg[green]%}⇡"
-GIT_PROMPT_CLEAN="%{$reset_color%}"
+declare GIT_PROMPT_BEHIND="%{$fg[red]%}⇣"
+declare GIT_PROMPT_DIRTY="%{$fg[yellow]%}*"
+declare GIT_PROMPT_AHEAD="%{$fg[green]%}⇡"
+declare GIT_PROMPT_CLEAN="%{$reset_color%}"
 
-GIT_PROMPT_PREFIX="%{$fg[blue]%}⦗"   #git symbol \uE0A0
-GIT_PROMPT_SUFFIX="%{$fg[blue]%}⦘%{$reset_color%} "
+declare GIT_PROMPT_PREFIX="%{$fg[blue]%}⦗"
+declare GIT_PROMPT_SUFFIX="%{$fg[blue]%}⦘%{$reset_color%}"
 
 function gitCheckStatus() {
+    declare STATUS="$GIT_PROMPT_CLEAN"
+
     if [[ -n $(git status -s) ]]; then
-        echo "$GIT_PROMPT_DIRTY"
-    elif [[ -n $(git log HEAD..origin/$(git_current_branch) 2> /dev/null) ]]; then
-        echo "$GIT_PROMPT_BEHIND"
-    elif [[ -n $(git log HEAD..origin/$(git_current_branch) 2> /dev/null) ]]; then
-        echo "$GIT_PROMPT_BEHIND"
-    else
-        echo "$GIT_PROMPT_CLEAN"
+        STATUS="$GIT_PROMPT_DIRTY"
     fi
+
+    if [[ -n $(git log origin/$(git_current_branch)..HEAD 2> /dev/null) ]]; then
+        STATUS="$GIT_PROMPT_AHEAD"
+    fi
+
+    if [[ -n $(git log HEAD..origin/$(git_current_branch) 2> /dev/null) ]]; then
+        STATUS="$GIT_PROMPT_BEHIND"
+    fi
+
+    echo "$STATUS"
 }
 
 function gitStatus() {
@@ -28,21 +34,20 @@ function gitStatus() {
     fi
 }
 
-#‹›
 function timeStamp() {
     echo "%{$fg_bold[grey]%}%T|%{$reset_color%}"
 }
 
 # If the path is too long, omit the middle path using ellipsis
 function compactPath() {
-    maximumElements=4
-    displayElements=2
-    echo "%{$fg[yellow]%}%($maximumElements~|%-1~/…/%$displayElements~|%$((DISPLAY_ELEMENTS++))~)%{$reset_color%}"
+    declare maximumElements=4
+    declare displayElements=2
+    echo "%{$fg[cyan]%}%($maximumElements~|%-1~/…/%$displayElements~|%$((DISPLAY_ELEMENTS++))~)%{$reset_color%}"
 }
 
  
 #------------------- PROMPT ---------------------
-PROMPT='$(timeStamp)$(compactPath) $(gitStatus)'
+PROMPT='$(timeStamp)$(compactPath) $(gitStatus) '
 
 
 PROMPT+='%(?:%{$fg_bold[green]%}➜:%{$fg_bold[red]%}➜) '
