@@ -32,33 +32,33 @@ function precmd() {
     elapsedSecs=$(( $now-$timer ))
     unset timer
 
-    declare EXECUTION_COLOUR="%{$fg[green]%}"
     # Only show execution time if more than 1 second
     if [[ "$elapsedSecs" -gt 1 ]]; then
-        TIME_STRING="${elapsedSecs}s"
+        timeStringColour="%{$fg[green]%}"
+        timeString="${elapsedSecs}s"
         declare -i hours
         declare -i mins
         declare -i secs
 
         # Yellow colour warning where execution is longer than 1 minute
-        if [[ "$elapsedSecs" -ge 60 ]] && [[ "$elapsedSecs" -le 300 ]]; then
-            EXECUTION_COLOUR="%{$fg[yellow]%}"
+        if [[ "$elapsedSecs" -ge 60 ]]; then
+            timeStringColour="%{$fg[yellow]%}"
             mins=$(( $elapsedSecs%3600/60 ))
             secs=$(( $elapsedSecs%60 ))
-            TIME_STRING="${mins}m${secs}s"
+            timeString="${mins}m ${secs}s"
         fi
 
         # Red colour warning where execution is longer than 5 minutes
-        if [[ "$elapsedSecs" -gt 300 ]]; then
-            EXECUTION_COLOUR="%{$fg[red]%}"
+        if [[ "$elapsedSecs" -ge 300 ]]; then
+            timeStringColour="%{$fg[red]%}"
         fi
 
         if [[ "$elapsedSecs" -ge 3600 ]]; then
             hours=$(( $elapsedSecs/3600 ))
-            TIME_STRING="${hours}h${mins}m${secs}s"
+            timeString="${hours}h ${mins}m ${secs}s"
         fi
 
-        RPROMPT="$EXECUTION_COLOUR$TIME_STRING %{$reset_color%}"
+        RPROMPT="$timeStringColour$timeString %{$reset_color%}"
     else
         RPROMPT=""
     fi
