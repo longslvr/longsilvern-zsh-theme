@@ -45,7 +45,29 @@ function compactPath() {
     echo "%{$fg[cyan]%}%($maximumElements~|%-1~/…/%$displayElements~|%$((DISPLAY_ELEMENTS++))~)%{$reset_color%}"
 }
 
- 
+# Show execution time after each command
+function preexec() {
+  timer=$(($(date +%s%0N)/1000000))
+}
+
+function precmd() {
+  if [ $timer ]; then
+    now=$(($(date +%s%0N)/1000000))
+    elapsedMs=$(($now-$timer))
+
+    declare EXECUTION_COLOUR="%{$fg[green]%}"
+    if [[ "$elapsedMs" -gt 5000 ]]; then
+        elapsedS=$(($elapsedMs / 1000))
+
+        EXECUTION_COLOUR="%{$fg[yellow]%}"
+        export RPROMPT="$EXECUTION_COLOUR${elapsedS}s %{$reset_color%}"
+    else
+        export RPROMPT="$EXECUTION_COLOUR${elapsedMs}ms %{$reset_color%}"
+    fi
+    unset timer
+  fi
+}
+
 #------------------- PROMPT ---------------------
 PROMPT='$(timeStamp)$(compactPath) $(gitStatus) '
 
