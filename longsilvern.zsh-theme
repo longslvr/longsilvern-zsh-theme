@@ -69,7 +69,7 @@ function precmd() {
 
 #------------------- PROMPT ---------------------
 function timeStampPrompt() {
-    echo "%{$fg_bold[grey]%}%T|%{$reset_color%}"
+    echo "%{$fg_bold[magenta]%}%T|%{$reset_color%}"
 }
 
 # If the path contains more than 4 directories, omit the middle path using ellipsis
