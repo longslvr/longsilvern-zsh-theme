@@ -85,7 +85,7 @@ declare GIT_PROMPT_SUFFIX="%{$fg[blue]%}⦘%{$reset_color%}"
 function gitStatusPrompt() {
     if $(git rev-parse --is-inside-work-tree 2>/dev/null); then
         # Compact the branch name when it is longer than maxinum length
-        max_branch_name_length=15
+        max_branch_name_length=18
         echo "$GIT_PROMPT_PREFIX%$max_branch_name_length>…>$(checkGitStatus)$(git_current_branch)%>>$GIT_PROMPT_SUFFIX"
     else
         echo ""
